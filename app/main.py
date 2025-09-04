@@ -6,18 +6,26 @@ from dependencies import get_db
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import FileResponse
+import os
 
 app = FastAPI()
 
 # Create Table
 Base.metadata.create_all(bind=engine)
 
-app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+assets_path = os.path.join(frontend_path, "assets")
+
+if os.path.exists(assets_path):
+    app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
 
 @app.get("/")
 async def serve_frontend():
-    return FileResponse("frontend/dist/index.html")
+    index_file = os.path.join(frontend_path, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return {"message": "Frontend not built yet"}
 
 
 # GET: Fetch all notes
