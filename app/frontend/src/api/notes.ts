@@ -1,15 +1,13 @@
-// src/api/notes.ts
+const API_BASE = "https://notes-app-4q23.onrender.com";
 
-// Fetch all notes from FastAPI
 export const getNotes = async () => {
-  const response = await fetch("/notes");
+  const response = await fetch(`${API_BASE}/notes`);
   if (!response.ok) throw new Error("Failed to fetch notes");
   return await response.json();
 };
 
-// Add a new note (your backend uses query param style: /notes?data=)
 export const addNote = async (note: string) => {
-  const response = await fetch(`/notes?data=${encodeURIComponent(note)}`, {
+  const response = await fetch(`${API_BASE}/notes?data=${encodeURIComponent(note)}`, {
     method: "POST",
   });
   if (!response.ok) throw new Error("Failed to add note");
