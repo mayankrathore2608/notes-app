@@ -10,16 +10,9 @@ app = FastAPI()
 # Create Table
 Base.metadata.create_all(bind=engine)
 
-# frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
-# assets_path = os.path.join(frontend_path, "assets")
-#
-# if os.path.exists(assets_path):
-#     app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
-
-
 origins = [
-    "https://your-frontend-domain.com",  # frontend domain
-    "http://localhost:3000",  # for local testing
+    "https://notes-app-2-w6nz.onrender.com",  # frontend domain
+    "http://localhost:8000",  # for local testing
 ]
 
 app.add_middleware(
