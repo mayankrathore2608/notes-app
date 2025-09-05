@@ -1,31 +1,39 @@
 from fastapi import FastAPI, Depends, Request
-from starlette.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from database_models import Base, Notes
 from database import engine, session
 from dependencies import get_db
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import FileResponse
-import os
+
 
 app = FastAPI()
 
 # Create Table
 Base.metadata.create_all(bind=engine)
 
-frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
-assets_path = os.path.join(frontend_path, "assets")
+# frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+# assets_path = os.path.join(frontend_path, "assets")
+#
+# if os.path.exists(assets_path):
+#     app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
-if os.path.exists(assets_path):
-    app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
+
+origins = [
+    "https://your-frontend-domain.com",  # frontend domain
+    "http://localhost:3000",  # for local testing
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
-async def serve_frontend():
-    index_file = os.path.join(frontend_path, "index.html")
-    if os.path.exists(index_file):
-        return FileResponse(index_file)
-    return {"message": "Frontend not built yet"}
+async def root():
+    return {"message": "FastAPI backend is running"}
 
 
 # GET: Fetch all notes
